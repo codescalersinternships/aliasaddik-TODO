@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  mongo:
+    image: mongo:5.0
+    container_name: mongo
+    environment:
+        - MONGO_INITDB_ROOT_USERNAME=aliasaddik
+        - MONGO_INITDB_ROOT_PASSWORD=12345
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+     
+  mongo-express:
+    image: mongo-express
+    container_name: mexpress
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=aliasaddik
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=12345
+      - ME_CONFIG_MONGODB_URL=mongodb://aliasaddik:12345@mongo:27017/?authSource=admin
+      
+    links:
+      - mongo
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
