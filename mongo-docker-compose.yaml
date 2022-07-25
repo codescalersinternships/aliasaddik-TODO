@@ -23,3 +23,14 @@ services:
     restart: unless-stopped
     ports:
       - "8081:8081"
+  
+  web:
+    build: .
+    ports:
+           - "8080:8080"
+    environment:
+        - MONGO_INITDB_ROOT_USERNAME=aliasaddik
+        - MONGO_INITDB_ROOT_PASSWORD=12345
+    restart: on-failure
+    depends_on:
+      - mongo
