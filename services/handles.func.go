@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/aliasaddik/todo-project/models"
 	"go.mongodb.org/mongo-driver/bson"
@@ -30,7 +31,7 @@ func (handle *HandlesFunc) CreateTask(task *models.Task) error {
 func (handle *HandlesFunc) GetTask() ([]*models.Task, error) {
 
 	var users []*models.Task
-	cursor, err := handle.task.Find(handle.ctx, bson.D{{}})
+	cursor, err := handle.task.Find(handle.ctx, bson.D{})
 	if err != nil {
 		return nil, err
 	}
@@ -56,6 +57,7 @@ func (handle *HandlesFunc) GetTask() ([]*models.Task, error) {
 }
 func (handle *HandlesFunc) EditTask(iTask *models.Task) error {
 	filter := bson.D{primitive.E{Key: "_id", Value: iTask.ID}}
+	fmt.Print(iTask.ID.String())
 	update := bson.D{primitive.E{Key: "$set", Value: bson.D{primitive.E{Key: "title", Value: iTask.Title}, primitive.E{Key: "_id", Value: iTask.ID}, primitive.E{Key: "done", Value: iTask.Done}}}}
 	result, _ := handle.task.UpdateOne(handle.ctx, filter, update)
 	if result.MatchedCount != 1 {
@@ -64,13 +66,17 @@ func (handle *HandlesFunc) EditTask(iTask *models.Task) error {
 	return nil
 }
 
-func (handle *HandlesFunc) DeleteTask(id *primitive.ObjectID) error {
-	filter := bson.D{primitive.E{Key: "_id", Value: id}}
+func (handle *HandlesFunc) DeleteTask(id string) error {
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+	filter := bson.M{"_id": objID}
+	fmt.Print("the Id i got", objID)
 	result, _ := handle.task.DeleteOne(handle.ctx, filter)
 	if result.DeletedCount != 1 {
 		return errors.New("no matched document found for delete")
 	}
 	return nil
 
-	return nil
 }

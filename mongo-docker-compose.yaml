@@ -27,10 +27,34 @@ services:
   web:
     build: .
     ports:
-           - "8080:8080"
+           - "9090:9090"
     environment:
         - MONGO_INITDB_ROOT_USERNAME=aliasaddik
         - MONGO_INITDB_ROOT_PASSWORD=12345
     restart: on-failure
     depends_on:
       - mongo
+
+
+
+  frontend: 
+    build: 
+      context: ./github-users-app  
+      dockerfile: Dockerfile 
+    image: svelte-app:1.0.0  
+    container_name: 'svelte-app'  
+    ports:  
+      - "8080:8080"
+  
+    stdin_open: true 
+    tty: true  
+    depends_on:  
+      - web
+
+  cypress:
+    image: cypress/base:14.17.6
+    
+
+
+  
+  

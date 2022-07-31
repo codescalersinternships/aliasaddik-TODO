@@ -1,0 +1,24 @@
+name: postman
+on: [push, pull_request]  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+        mongodb-version: [4.2]
+    steps:
+    - name: Check out code 🛎
+      uses: actions/checkout@v2
+      
+    - name: Run docker-compose
+      run: docker-compose  -f mongo-docker-compose.yaml up -d
+    
+    - name: Install dependencies
+      run: npm install
+    
+    - name: Install newman
+      run: npm install -g newman
+   
+    - name: Run the API and Postmans tests
+      run:  newman run "mytodoapp.postman_collection.js"

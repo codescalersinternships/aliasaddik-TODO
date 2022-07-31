@@ -7,6 +7,7 @@ import (
 
 	"github.com/aliasaddik/todo-project/controllers"
 	"github.com/aliasaddik/todo-project/services"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -27,7 +28,7 @@ var (
 func init() {
 	ctx = context.TODO()
 
-	mongoconn := options.Client().ApplyURI("mongodb://aliasaddik:12345@localhost:27017")
+	mongoconn := options.Client().ApplyURI("mongodb://aliasaddik:12345@mongo:27017/?authSource=admin")
 	mongoclient, err = mongo.Connect(ctx, mongoconn)
 	if err != nil {
 		log.Fatal("error while connecting with mongo", err)
@@ -42,7 +43,13 @@ func init() {
 	taskc = mongoclient.Database("taskdb").Collection("tasks")
 	handles = services.NewHandle(taskc, ctx)
 	controller = controllers.New(handles)
-	server = gin.Default()
+	server = gin.New()
+	server.Use(cors.New(cors.Config{
+		AllowHeaders: []string{"Content-Type", "Access-Control-Allow-Origin"},
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{"PUT", "DELETE", "GET", "POST", "PATCH"},
+	}))
+
 }
 
 func main() {
