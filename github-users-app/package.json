@@ -6,7 +6,11 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public --no-clear --port 8080",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "test": "cypress run",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "cypress:record": "cypress run --record --key"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",

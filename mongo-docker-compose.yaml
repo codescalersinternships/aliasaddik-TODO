@@ -1,5 +1,5 @@
-version: "3.8"
-services:
+ version: "3.8"
+ services:
   mongo:
     image: mongo:5.0
     container_name: mongo
@@ -26,6 +26,8 @@ services:
   
   web:
     build: .
+    image: web:1.0.0
+    container_name: 'web'
     ports:
            - "9090:9090"
     environment:
@@ -38,11 +40,10 @@ services:
 
 
   frontend: 
-    build: 
-      context: ./github-users-app  
-      dockerfile: Dockerfile 
-    image: svelte-app:1.0.0  
-    container_name: 'svelte-app'  
+    build: ./github-users-app  
+      
+    image: frontend:1.0.0  
+    container_name: 'frontend'  
     ports:  
       - "8080:8080"
   
@@ -50,9 +51,15 @@ services:
     tty: true  
     depends_on:  
       - web
+ 
+  
+    
 
-  cypress:
-    image: cypress/base:14.17.6
+
+  
+  
+  
+  
     
 
 

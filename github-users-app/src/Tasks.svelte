@@ -1,6 +1,7 @@
 <script lang="ts">
  
    import axios from 'axios';
+import { onMount } from 'svelte';
  
 
 type Task = {
@@ -15,59 +16,72 @@ let name =  '';
   data: Task[];
 };
 let todos= {};
-const GetTasks = async()=>{
+$: allTaskPromise = []
+onMount(async()=>{
   try {
-    const {data, status} = await axios.get ('http://localhost:9090/');
+   const {data, status} = await axios.get ('http://web:9090/');
    console.log(data)
-   
-
-    
-    console.log('response status is: ', status);
+   console.log('response status is: ', status);
 
   
-    return data ;
+   allTaskPromise = data ;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log('error message: ', error.message);
-      new Error( error.message);
+       Error( error.message);
+    } else {
+      console.log('unexpected error: ', error);
+      new Error( 'An unexpected error occurred');
+    }}})
+    
+   const GetTasks =async()=>{
+  try {
+   const {data, status} = await axios.get ('http://web:9090/');
+   console.log(data)
+   console.log('response status is: ', status);
+
+  
+   allTaskPromise = data ;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log('error message: ', error.message);
+       Error( error.message);
     } else {
       console.log('unexpected error: ', error);
       new Error( 'An unexpected error occurred');
     }}}
-    $: allTaskPromise = GetTasks();
-
 
 const updateDone = async(input) =>{
  
   try {
      let item = JSON.stringify(input)
-      const res = await axios.put('http://localhost:9090', item);
+      const res = await axios.put('http://web:9090', item);
 		} catch (err) {
 			console.log(err);
 		}
-    allTaskPromise = GetTasks();
+  GetTasks();
 
 	};  
   const addTask = async(input) =>{
  
  try {
     let item = JSON.stringify({ done: false, title:input})
-     const res = await axios.post('http://localhost:9090', item);
+     const res = await axios.post('http://web:9090', item);
    } catch (err) {
      console.log(err);
    }
-   allTaskPromise = GetTasks();
+    GetTasks();
  };   
 
  const deleteTask = async(input) =>{
  
  try {
  
-     const res = await axios.delete('http://localhost:9090/'+ input);
+     const res = await axios.delete('http://web:9090/'+ input);
    } catch (err) {
      console.log(err);
    }
-   allTaskPromise = GetTasks();
+    GetTasks();
  };  
   
   
@@ -79,9 +93,9 @@ const updateDone = async(input) =>{
 
 </section>
  <section>
-  {#await allTaskPromise then data }
+   
  
-      {#each data as task, index(task._id)}
+      {#each allTaskPromise as task, index(task._id)}
   
         <div>
        
@@ -92,5 +106,5 @@ const updateDone = async(input) =>{
            
         </div>
       {/each}
-    {/await}
+  
   </section>  

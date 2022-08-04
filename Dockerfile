@@ -1,15 +1,26 @@
-#get a base image
-FROM golang:1.16-buster
+FROM golang:1.18-alpine3.15 AS Build
 
- 
+WORKDIR /app
 
-WORKDIR /go/src/app
 COPY . .
 
-RUN go get -d -v
-RUN go build -v
-RUN echo $PATH
-RUN ls
-RUN pwd
+RUN go build -o main .
 
-CMD ["./todo-project"]
+
+
+FROM alpine:3.15
+
+WORKDIR /app
+
+COPY --from=Build /app/main .
+
+EXPOSE 9090
+
+CMD [ "./main" ]
+
+
+
+
+
+
+ 
