@@ -96,3 +96,40 @@ func TestPostTask(t *testing.T) {
 	}
 
 }
+
+func TestEditTask(t *testing.T) {
+	requestBody := []byte(`{"done": true,"title": "edited task", "_id": "62e657f2e98f72e7d54edf78"} `)
+	request, err := http.NewRequest("PUT", "/", bytes.NewBuffer(requestBody))
+	if err != nil {
+		t.Errorf("expected no error but got %s", err)
+	}
+
+	actualResponse := httptest.NewRecorder()
+
+	server.ServeHTTP(actualResponse, request)
+
+	gotCode := actualResponse.Code
+	wantCode := 202
+	if gotCode != wantCode {
+		t.Errorf("expected %v but got %v", wantCode, gotCode)
+	}
+
+}
+func TestDeleteTask(t *testing.T) {
+
+	request, err := http.NewRequest("DELETE", "/62e4898b83762e64f0215f04", bytes.NewBuffer(nil))
+	if err != nil {
+		t.Errorf("expected no error but got %s", err)
+	}
+
+	actualResponse := httptest.NewRecorder()
+
+	server.ServeHTTP(actualResponse, request)
+
+	gotCode := actualResponse.Code
+	wantCode := 204
+	if gotCode != wantCode {
+		t.Errorf("expected %v but got %v", wantCode, gotCode)
+	}
+
+}

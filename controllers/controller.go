@@ -32,7 +32,7 @@ func (controller *Controller) CreateTask(ctx *gin.Context) {
 		return
 	}
 	//change the status ok to the specific request
-	ctx.JSON(http.StatusOK, gin.H{"message": "success"})
+	ctx.JSON(http.StatusAccepted, gin.H{"message": "success"})
 }
 
 func (Controller *Controller) GetTask(ctx *gin.Context) {
@@ -56,7 +56,7 @@ func (Controller *Controller) EditTask(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"message": "success"})
+	ctx.JSON(http.StatusAccepted, gin.H{"message": "success"})
 }
 func (Controller *Controller) DeleteTask(ctx *gin.Context) {
 
@@ -68,7 +68,7 @@ func (Controller *Controller) DeleteTask(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"message": "success"})
+	ctx.JSON(http.StatusNoContent, gin.H{"message": "success"})
 }
 
 func (controller *Controller) RegisterRoutes(routerGroup *gin.RouterGroup) {

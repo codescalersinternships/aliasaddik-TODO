@@ -49,6 +49,7 @@ func init() {
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{"PUT", "DELETE", "GET", "POST", "PATCH"},
 	}))
+	server.Static("/swaggerui/", "cmd/api/swaggerui")
 
 }
 
